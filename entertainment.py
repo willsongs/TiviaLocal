@@ -30,7 +30,7 @@ def input(message):
         n = len(parse_json['result'])
         if n==0:
             bot.reply_to(message,'the movie is not in the database right now. Will be added to the database soon')
-            bot.send_message(message.chat.id, 'Please try again after some time')
+            bot.send_message(message.chat.id, 'Please wait for 15 minutes and try again later')
 
         else:
             for i in range(n):
