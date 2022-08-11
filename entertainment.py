@@ -4,7 +4,6 @@ import json
 
 from telebot import custom_filters
 from telebot import types
-import mysql.connector
 
 API_TOKEN = '5505287179:AAFu9iQ7jTeY8JM_KTN7hPe6oUawkYI195A'
 
