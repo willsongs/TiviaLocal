@@ -4,6 +4,7 @@ import json
 
 from telebot import custom_filters
 from telebot import types
+import mysql.connector
 
 API_TOKEN = '5505287179:AAFu9iQ7jTeY8JM_KTN7hPe6oUawkYI195A'
 
@@ -29,17 +30,26 @@ def input(message):
         n = len(parse_json['result'])
         if n==0:
             bot.reply_to(message,'the movie is not in the database right now. Will be added to the database soon')
-            bot.send_message(message.chat.id, 'Please wait for 15 minutes and try again later')
+            bot.send_message(message.chat.id, 'Please try again after some time \n Wait for next 15 minutes and try again')
 
         else:
             for i in range(n):
                 # print(parse_json['result'][i])
                 code = parse_json['result'][i]['file_code']
                 img = parse_json['result'][i]['splash_img']
+                name = parse_json['result'][i]['title']
                 # print(f"https://dood.wf/d/{code}")
                 # print(img)
-                bot.send_photo(message.chat.id, img, f"https://dood.wf/d/{code}")
+                bot.send_photo(message.chat.id, img, f"TITLE: {name}\nhttps://dood.wf/d/{code}")
 
+    except Exception as e:
+        bot.reply_to(message, 'oooops')
+
+@bot.message_handler(commands=["Ok thanks"])
+def start(message):
+    try:
+        markup = types.ReplyKeyboardMarkup(row_width=2)
+        bot.reply_to(message, 'My pleasure 😊', reply_markup=markup)
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
