@@ -40,7 +40,7 @@ def input(message):
                 name = parse_json['result'][i]['title']
                 # print(f"https://dood.wf/d/{code}")
                 # print(img)
-                bot.send_photo(message.chat.id, img, f"TITLE: {name}\nhttps://dood.wf/d/{code}")
+                bot.send_photo(message.chat.id, img, f"TITLE: {name}\n\nhttps://dood.wf/d/{code}")
 
     except Exception as e:
         bot.reply_to(message, 'oooops')
