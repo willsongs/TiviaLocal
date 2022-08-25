@@ -44,7 +44,7 @@ def input(message):
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
-@bot.message_handler(commands=["Ok thanks"])
+@bot.message_handler(commands=["Ok thanks","thank you","thnx"])
 def start(message):
     try:
         markup = types.ReplyKeyboardMarkup(row_width=2)
