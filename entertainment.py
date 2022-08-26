@@ -53,7 +53,7 @@ def input(message):
                 file_size = "%s %s" % (s, size_name[i])
                 watch_link = f"https://dood.wf/d/{code}"
                 markup = telebot.types.InlineKeyboardMarkup(row_width=1)
-                btn1 = telebot.types.InlineKeyboardButton('Watch', url= watch_link)
+                btn1 = telebot.types.InlineKeyboardButton('Direct Link', url= watch_link)
                 markup.add(btn1)
                 bot.send_photo(message.chat.id, img,f"<b>TITLE:</b> <i>{name}</i>\n"
                                                     f"\n<b>SIZE:</b> <i>{file_size}</i>\n", parse_mode = 'html',reply_markup = markup)
@@ -61,7 +61,7 @@ def input(message):
     except Exception:
         bot.reply_to(message, 'oooops')
 
-@bot.message_handler(commands=["Ok thanks"])
+@bot.message_handler(commands=["Ok thanks","ok"])
 def start(message):
     try:
         markup = types.ReplyKeyboardMarkup(row_width=2)
