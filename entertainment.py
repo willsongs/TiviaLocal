@@ -6,7 +6,7 @@ import math
 from telebot import custom_filters
 from telebot import types
 
-API_TOKEN = '5252289753:AAEk5edcuo1ZTmvhWETeJa1qbEYA8kCeoi8'
+API_TOKEN = '5505287179:AAFu9iQ7jTeY8JM_KTN7hPe6oUawkYI195A'
 
 bot = telebot.TeleBot(API_TOKEN)
 
