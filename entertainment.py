@@ -18,6 +18,14 @@ def start(message):
     except Exception:
         bot.reply_to(message, 'oooops')
 
+@bot.message_handler(commands=["Ok thanks","ok","Thanks"])
+def start(message):
+    try:
+        markup = types.ReplyKeyboardMarkup(row_width=2)
+        bot.reply_to(message, 'My pleasure 😊', reply_markup=markup)
+    except Exception:
+        bot.reply_to(message, 'oooops')
+
 @bot.message_handler(regexp=r'\b[ a-zA-Z.]+\b')
 def input(message):
     try:
@@ -58,14 +66,6 @@ def input(message):
                 bot.send_photo(message.chat.id, img,f"<b>TITLE:</b> <i>{name}</i>\n"
                                                     f"\n<b>SIZE:</b> <i>{file_size}</i>\n", parse_mode = 'html',reply_markup = markup)
 
-    except Exception:
-        bot.reply_to(message, 'oooops')
-
-@bot.message_handler(commands=["Ok thanks","ok","Thanks"])
-def start(message):
-    try:
-        markup = types.ReplyKeyboardMarkup(row_width=2)
-        bot.reply_to(message, 'My pleasure 😊', reply_markup=markup)
     except Exception:
         bot.reply_to(message, 'oooops')
 
