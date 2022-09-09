@@ -19,7 +19,7 @@ def start(message):
         bot.reply_to(message, 'oooops')
 
 @bot.message_handler(text=["Ok thanks","ok","Thanks"])
-def start(message):
+def ok(message):
     try:
         markup = types.ReplyKeyboardMarkup(row_width=2)
         bot.reply_to(message, 'My pleasure 😊', reply_markup=markup)
@@ -28,7 +28,7 @@ def start(message):
 
 
 @bot.message_handler(text=["Brahmastra"])
-def start(message):
+def br(message):
     try:
         markup = types.ReplyKeyboardMarkup(row_width=2)
         bot.reply_to(message, 'Please be patient the movie will be uploaded soon ☺️', reply_markup=markup)
