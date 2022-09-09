@@ -26,6 +26,16 @@ def start(message):
     except Exception:
         bot.reply_to(message, 'oooops')
 
+
+@bot.message_handler(text=["Brahmastra"])
+def start(message):
+    try:
+        markup = types.ReplyKeyboardMarkup(row_width=2)
+        bot.reply_to(message, 'Please be patient the movie will be uploaded soon ☺️', reply_markup=markup)
+    except Exception:
+        bot.reply_to(message, 'oooops')
+
+
 @bot.message_handler(regexp=r'\b[ a-zA-Z.]+\b')
 def input(message):
     try:
