@@ -2,6 +2,8 @@ import telebot
 import requests
 import json
 import math
+from telebot import types
+
 
 from telebot import custom_filters
 from telebot import types
@@ -12,34 +14,38 @@ bot = telebot.TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=["start"])
 def start(message):
+    print(message.chat.id)
     try:
         markup = types.ReplyKeyboardMarkup(row_width=2)
         bot.reply_to(message, 'okey! now enter any name of movie or webseries you want to watch today', reply_markup=markup)
     except Exception:
         bot.reply_to(message, 'oooops')
 
-@bot.message_handler(text=["Ok thanks","ok","Thanks"])
+
+@bot.message_handler(commands=["done"])
+def done(message):
+    name = message.text
+    spltarray = name.split(" ",2)
+    mv_name = spltarray[2]
+    c_id = spltarray[1]
+    try:
+        markup = types.ReplyKeyboardMarkup(row_width=2)
+        bot.send_message(c_id, f'The movie has been added to the database 😊\n You can retry now\n try saying```{mv_name.strip()}```', parse_mode = 'MarkdownV2', reply_markup=markup)
+    except Exception:
+        bot.reply_to(message, 'oooops')
+
+@bot.message_handler(func=lambda message: message.text.lower() in ['ok'])
 def ok(message):
     try:
-        markup = types.ReplyKeyboardMarkup(row_width=2)
-        bot.reply_to(message, 'My pleasure 😊', reply_markup=markup)
-    except Exception:
+        bot.reply_to(message, "😊", reply_markup=markup)
+    except Exception as e:
         bot.reply_to(message, 'oooops')
-
-
-@bot.message_handler(text=["Brahmastra"])
-def br(message):
-    try:
-        markup = types.ReplyKeyboardMarkup(row_width=2)
-        bot.reply_to(message, 'Please be patient the movie will be uploaded soon ☺️', reply_markup=markup)
-    except Exception:
-        bot.reply_to(message, 'oooops')
-
 
 @bot.message_handler(regexp=r'\b[ a-zA-Z.]+\b')
-def input(message):
+def name(message):
     try:
         term = message.text
+        u_id = message.from_user.id
         # print(term)
         url = requests.get(f"https://doodapi.com/api/search/videos?key=13527p8pcv54of4yjeryk&search_term={term}")
         data = url.text
@@ -50,7 +56,7 @@ def input(message):
             bot.reply_to(message,'the movie is not in the database right now. Will be added to the database soon')
             bot.send_message(message.chat.id, 'Please try again after some time \n Wait for next 15 minutes and try again')
 
-            bot.send_message(1915029649, term)
+            bot.send_message(1915029649, f"{term} {u_id}")
 
         else:
             for i in range(n):
@@ -71,13 +77,12 @@ def input(message):
                 file_size = "%s %s" % (s, size_name[i])
                 watch_link = f"https://dood.wf/d/{code}"
                 markup = telebot.types.InlineKeyboardMarkup(row_width=1)
-                btn1 = telebot.types.InlineKeyboardButton('Direct Link', url= watch_link)
+                btn1 = telebot.types.InlineKeyboardButton('Watch', url= watch_link, callback_data="click")
                 markup.add(btn1)
                 bot.send_photo(message.chat.id, img,f"<b>TITLE:</b> <i>{name}</i>\n"
                                                     f"\n<b>SIZE:</b> <i>{file_size}</i>\n", parse_mode = 'html',reply_markup = markup)
 
     except Exception:
         bot.reply_to(message, 'oooops')
-
 
 bot.polling()
