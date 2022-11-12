@@ -8,7 +8,7 @@ from telebot import types
 from telebot import custom_filters
 from telebot import types
 
-API_TOKEN = '5505287179:AAFu9iQ7jTeY8JM_KTN7hPe6oUawkYI195A'
+API_TOKEN = '5252289753:AAEk5edcuo1ZTmvhWETeJa1qbEYA8kCeoi8'
 
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -55,7 +55,8 @@ def name(message):
         if n==0:
             bot.reply_to(message,'the movie is not in the database right now. Will be added to the database soon')
             bot.send_message(message.chat.id, 'Please try again after some time \n Wait for next 15 minutes and try again')
-            bot.send_message(1915029649, f"```request {term}``` ```{u_id}```", parse_mode = 'MarkdownV2')
+
+            bot.send_message(1915029649, f"```{term}``` ```{u_id}```", parse_mode = 'MarkdownV2')
 
         else:
             for i in range(n):
@@ -75,9 +76,11 @@ def name(message):
                 s = round(size / p, 2)
                 file_size = "%s %s" % (s, size_name[i])
                 watch_link = f"https://dood.wf/d/{code}"
-                markup = telebot.types.InlineKeyboardMarkup(row_width=1)
+                watch_link1 = f"https://dood.re/d/{code}"
+                markup = telebot.types.InlineKeyboardMarkup(row_width=2)
                 btn1 = telebot.types.InlineKeyboardButton('Watch', url= watch_link, callback_data="click")
-                markup.add(btn1)
+                btn2 = telebot.types.InlineKeyboardButton('alternate link', url= watch_link1)
+                markup.add(btn1, btn2)
                 bot.send_photo(message.chat.id, img,f"<b>TITLE:</b> <i>{name}</i>\n"
                                                     f"\n<b>SIZE:</b> <i>{file_size}</i>\n", parse_mode = 'html',reply_markup = markup)
 
