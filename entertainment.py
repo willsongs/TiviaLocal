@@ -46,7 +46,7 @@ def name(message):
     try:
         term = message.text
         u_id = message.from_user.id
-        # print(term)
+        print(term)
         url = requests.get(f"https://doodapi.com/api/search/videos?key=13527p8pcv54of4yjeryk&search_term={term}")
         data = url.text
         parse_json = json.loads(data)
