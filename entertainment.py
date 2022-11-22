@@ -56,7 +56,10 @@ def name(message):
             bot.reply_to(message,'the movie is not in the database right now. Will be added to the database soon')
             bot.send_message(message.chat.id, 'Please try again after some time \n Wait for next 15 minutes and try again')
 
-            bot.send_message(1915029649, f"```request {term}``` ```{u_id}```", parse_mode = 'MarkdownV2')
+            markup = telebot.types.InlineKeyboardMarkup(row_width=1)
+            btn1 = telebot.types.InlineKeyboardButton('done default', callback_data="done_default")
+            markup.add(btn1)
+            bot.send_message(1915029649, f"```request {term}``` , ```{u_id}```", parse_mode = 'MarkdownV2', reply_markup = markup)
 
         else:
             for i in range(n):
@@ -91,6 +94,19 @@ def name(message):
 def click (call: types.CallbackQuery):
     try:
         print(call.message.chat.id)
+    except Exception:
+        print("something went wrong")
+        
+@bot.callback_query_handler(func=lambda c: c.data == 'done_default')
+def done_default(call: types.CallbackQuery):
+    c_id = call.message.chat.id
+    raw_text = call.message.text
+    txtsplt = raw_text.split(',')
+    u_id = txtsplt[1]
+    mv_name = txtsplt[0]
+    try:
+        print(f"{term} & {u_id}")
+        bot.send_message(c_id, f"The movie has been added to the database 😊\nYou can retry now\nTry saying```waste {mv_name}```", parse_mode = "Markdownv2")
     except Exception:
         print("something went wrong")
 
