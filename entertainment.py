@@ -103,7 +103,7 @@ def done_default(call: types.CallbackQuery):
     raw_text = call.message.text
     txtsplt = raw_text.split(',')
     u_id = txtsplt[1]
-    Print(u_id)
+    print(u_id)
     mv_name = txtsplt[0]
     try:
         # print(f"{mv_name} & {u_id}")
