@@ -59,7 +59,7 @@ def name(message):
             markup = telebot.types.InlineKeyboardMarkup(row_width=1)
             btn1 = telebot.types.InlineKeyboardButton('done default', callback_data="done_default")
             markup.add(btn1)
-            bot.send_message(1915029649, f"```request {term}``` , ```{u_id}```", parse_mode = 'MarkdownV2', reply_markup = markup)
+            bot.send_message(1915029649, f"```request {term}```,```{u_id}```", parse_mode = 'MarkdownV2', reply_markup = markup)
 
         else:
             for i in range(n):
