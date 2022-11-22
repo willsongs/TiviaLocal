@@ -105,7 +105,7 @@ def done_default(call: types.CallbackQuery):
     u_id = txtsplt[1]
     mv_name = txtsplt[0]
     try:
-        print(f"{term} & {u_id}")
+        print(f"{mv_name} & {u_id}")
         bot.send_message(c_id, f"The movie has been added to the database 😊\nYou can retry now\nTry saying```waste {mv_name}```", parse_mode = "Markdownv2")
     except Exception:
         print("something went wrong")
