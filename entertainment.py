@@ -87,7 +87,7 @@ def name(message):
     except Exception:
         bot.reply_to(message, 'oooops')
 
-@bot.callback_query_handler(func lambda c: c.data == 'click')
+@bot.callback_query_handler(func=lambda c: c.data == 'click')
 def click (call: types.CallbackQuery):
     try:
         print(call.message.chat.id)
