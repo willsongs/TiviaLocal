@@ -108,7 +108,9 @@ def done_default(call: types.CallbackQuery):
     try:
         # print(f"{mv_name} & {u_id}")
         bot.send_message(u_id.strip(), f"The movie has been added to the database 😊\nYou can retry now\nTry saying```waste {mv_name.strip()}```", parse_mode = "Markdownv2")
+        bot.send_message(1915029649, "message sent successfully ")
     except Exception:
         print("something went wrong")
+        bot.send_message(1915029649, "kuch glt ho gaya :(")
 
 bot.polling()
