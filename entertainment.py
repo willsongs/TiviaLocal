@@ -37,7 +37,7 @@ def done(message):
 @bot.message_handler(func=lambda message: message.text.lower() in ['ok'])
 def ok(message):
     try:
-        bot.reply_to(message, "😊", reply_markup=markup)
+        bot.reply_to(message, "😊")
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
