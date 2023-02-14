@@ -3,8 +3,6 @@ import requests
 import json
 import math
 from telebot import types
-import threading
-# from timer import timer
 
 from telebot import custom_filters
 from telebot import types
@@ -52,22 +50,6 @@ def ok(message):
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
-# @timer (1,1)
-def fetch_size(code):
-    s_url = requests.post(f"https://doodapi.com/api/file/info?key=13527p8pcv54of4yjeryk&file_code={code}")
-    sdata = s_url.text
-    s_parse = json.loads(sdata)
-    raw_size = s_parse['result'][0]['size']
-    size = int(raw_size)
-    if size == 0:
-        return "0B"
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    i = int(math.floor(math.log(size, 1024)))
-    p = math.pow(1024, i)
-    s = round(size / p, 2)
-    file_size = "%s %s" % (s, size_name[i])
-    return file_size
-
 
 @bot.message_handler(regexp=r'\b[ a-zA-Z.]+\b')
 def name(message):
@@ -75,7 +57,7 @@ def name(message):
         term = message.text
         u_id = message.from_user.id
         print(term)
-        url = requests.post(f"https://doodapi.com/api/search/videos?key=13527p8pcv54of4yjeryk&search_term={term}")
+        url = requests.get(f"https://doodapi.com/api/search/videos?key=13527p8pcv54of4yjeryk&search_term={term}")
         data = url.text
         parse_json = json.loads(data)
 
@@ -93,38 +75,34 @@ def name(message):
                              reply_markup=markup)
 
         else:
-            threads = []
             for i in range(n):
-                code = parse_json['result'][i]['file_code']
-                img = parse_json['result'][i]['splash_img']
-                name = parse_json['result'][i]['title']
-                # s_url = requests.post(f"https://doodapi.com/api/file/info?key=13527p8pcv54of4yjeryk&file_code={code}")
-                # sdata = s_url.text
-                # s_parse = json.loads(sdata)
-                # raw_size = s_parse['result'][0]['size']
-                # size = int(raw_size)
-                # if size == 0:
-                #     return "0B"
-                # size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-                # i = int(math.floor(math.log(size, 1024)))
-                # p = math.pow(1024, i)
-                # s = round(size / p, 2)
-                # file_size = "%s %s" % (s, size_name[i])
-                t = threading.Thread(target=fetch_size(), args=(code,))
-                t.start()
-                threads.append(t)
-
-                file_size = threads[i]
-
-                watch_link = f"https://dood.wf/d/{code}"
-                watch_link1 = f"https://dood.re/d/{code}"
-                markup = telebot.types.InlineKeyboardMarkup(row_width=2)
-                btn1 = telebot.types.InlineKeyboardButton('Watch', url=watch_link, callback_data="click")
-                btn2 = telebot.types.InlineKeyboardButton('alternate link', url=watch_link1)
-                markup.add(btn1, btn2)
-                bot.send_photo(message.chat.id, img, f"<b>TITLE:</b> <i>{name}</i>\n"
+                try:
+                    code = parse_json['result'][i]['file_code']
+                    img = parse_json['result'][i]['splash_img']
+                    name = parse_json['result'][i]['title']
+                    s_url = requests.get(f"https://doodapi.com/api/file/info?key=13527p8pcv54of4yjeryk&file_code={code}")
+                    sdata = s_url.text
+                    s_parse = json.loads(sdata)
+                    raw_size = s_parse['result'][0]['size']
+                    size = int(raw_size)
+                    if size == 0:
+                        return "0B"
+                    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+                    i = int(math.floor(math.log(size, 1024)))
+                    p = math.pow(1024, i)
+                    s = round(size / p, 2)
+                    file_size = "%s %s" % (s, size_name[i])
+                    watch_link = f"https://dood.wf/d/{code}"
+                    watch_link1 = f"https://dood.re/d/{code}"
+                    markup = telebot.types.InlineKeyboardMarkup(row_width=2)
+                    btn1 = telebot.types.InlineKeyboardButton('Watch', url=watch_link, callback_data="click")
+                    btn2 = telebot.types.InlineKeyboardButton('alternate link', url=watch_link1)
+                    markup.add(btn1, btn2)
+                    bot.send_photo(message.chat.id, img, f"<b>TITLE:</b> <i>{name}</i>\n"
                                                      f"\n<b>SIZE:</b> <i>{file_size}</i>\n", parse_mode='html',
-                               reply_markup=markup)
+                                reply_markup=markup)
+                except:
+                    pass
 
     except Exception:
         bot.reply_to(message, 'oooops')
