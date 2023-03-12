@@ -3,11 +3,15 @@ import requests
 import json
 import math
 from telebot import types
+import multiprocessing
+import logging
 
 from telebot import custom_filters
 from telebot import types
 
-API_TOKEN = '5505287179:AAFu9iQ7jTeY8JM_KTN7hPe6oUawkYI195A'
+logging.basicConfig(filename='example.log', level=logging.DEBUG)
+
+API_TOKEN = '5620400281:AAHw03yvbtfCpitTWl_r3RXlSACHgeL2IPg'
 
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -19,7 +23,8 @@ class User:
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    print(message.chat.id)
+    # print(message.chat.id)
+    logging.info(message.chat.id)
     try:
         markup = types.ReplyKeyboardMarkup(row_width=2)
         bot.reply_to(message, 'okey! now enter any name of movie or webseries you want to watch today',
@@ -50,16 +55,44 @@ def ok(message):
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
+def fetch_final_data(code):
+    s_url = requests.get(f"https://doodapi.com/api/file/info?key=13527p8pcv54of4yjeryk&file_code={code}")
+    sdata = s_url.text
+    s_parse = json.loads(sdata)
+    img = s_parse['result'][0]['splash_img']
+    name = s_parse['result'][0]['title']
+    raw_size = s_parse['result'][0]['size']
+    size = int(raw_size)
+    if size == 0:
+        return "0B"
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    i = int(math.floor(math.log(size, 1024)))
+    p = math.pow(1024, i)
+    s = round(size / p, 2)
+    file_size = "%s %s" % (s, size_name[i])
+    watch_link = f"https://dood.wf/d/{code}"
+    watch_link1 = f"https://dood.re/d/{code}"
+    markup = telebot.types.InlineKeyboardMarkup(row_width=2)
+    btn1 = telebot.types.InlineKeyboardButton('Watch', url=watch_link, callback_data="click")
+    btn2 = telebot.types.InlineKeyboardButton('alternate link', url=watch_link1)
+    markup.add(btn1, btn2)
+    return img, name, file_size, markup
 
 @bot.message_handler(regexp=r'\b[ a-zA-Z.]+\b')
 def name(message):
     try:
         term = message.text
         u_id = message.from_user.id
-        print(term)
+        # print(term)
+        logging.info(term)
         url = requests.get(f"https://doodapi.com/api/search/videos?key=13527p8pcv54of4yjeryk&search_term={term}")
         data = url.text
         parse_json = json.loads(data)
+        # make a list of all the filecodes
+        res = parse_json["result"]
+        key = "file_code"
+        f_codes = [d.get(key) for d in res]
+
 
         n = len(parse_json['result'])
         if n == 0:
@@ -75,38 +108,20 @@ def name(message):
                              reply_markup=markup)
 
         else:
-            for i in range(n):
-                try:
-                    code = parse_json['result'][i]['file_code']
-                    img = parse_json['result'][i]['splash_img']
-                    name = parse_json['result'][i]['title']
-                    s_url = requests.get(f"https://doodapi.com/api/file/info?key=13527p8pcv54of4yjeryk&file_code={code}")
-                    sdata = s_url.text
-                    s_parse = json.loads(sdata)
-                    raw_size = s_parse['result'][0]['size']
-                    size = int(raw_size)
-                    if size == 0:
-                        return "0B"
-                    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-                    i = int(math.floor(math.log(size, 1024)))
-                    p = math.pow(1024, i)
-                    s = round(size / p, 2)
-                    file_size = "%s %s" % (s, size_name[i])
-                    watch_link = f"https://dood.wf/d/{code}"
-                    watch_link1 = f"https://dood.re/d/{code}"
-                    markup = telebot.types.InlineKeyboardMarkup(row_width=2)
-                    btn1 = telebot.types.InlineKeyboardButton('Watch', url=watch_link, callback_data="click")
-                    btn2 = telebot.types.InlineKeyboardButton('alternate link', url=watch_link1)
-                    markup.add(btn1, btn2)
-                    bot.send_photo(message.chat.id, img, f"<b>TITLE:</b> <i>{name}</i>\n"
+            # we will add the list of all file codes here/
+            try:
+                if  __name__ == "__main__":
+                    with multiprocessing.Pool(processes=-1) as pool:
+                        main_data = pool.map(fetch_final_data, f_codes)
+                        for img, name, file_size, markup in main_data:
+                            bot.send_photo(message.chat.id, img, f"<b>TITLE:</b> <i>{name}</i>\n"
                                                      f"\n<b>SIZE:</b> <i>{file_size}</i>\n", parse_mode='html',
-                                reply_markup=markup)
-                except:
-                    pass
+                                    reply_markup=markup)
+            except:
+                pass
 
     except Exception:
         bot.reply_to(message, 'oooops')
-
 
 @bot.callback_query_handler(func=lambda c: c.data == 'click')
 def click(call: types.CallbackQuery):
@@ -122,7 +137,8 @@ def done_default(call: types.CallbackQuery):
     raw_text = call.message.text
     txtsplt = raw_text.split(',')
     u_id = txtsplt[1]
-    print(u_id)
+    # print(u_id)
+    logging.info(u_id)
     mv_name = txtsplt[0]
     try:
         # print(f"{mv_name} & {u_id}")
@@ -131,7 +147,7 @@ def done_default(call: types.CallbackQuery):
                          parse_mode="Markdownv2")
         bot.send_message(1915029649, "message sent successfully ")
     except Exception:
-        print("something went wrong")
+        # print("something went wrong")
         bot.send_message(1915029649, "kuch glt ho gaya :(")
 
 @bot.callback_query_handler(func=lambda c: c.data == 'done_custom')
@@ -140,7 +156,8 @@ def done_custom(call: types.CallbackQuery):
     raw_text = call.message.text
     txtsplt = raw_text.split(',')
     u_id = txtsplt[1]
-    print(u_id)
+    # print(u_id)
+    logging.info(u_id)
     user = User(u_id)
     user_dict[c_id] = user
     # mv_name = txtsplt[0]
@@ -149,7 +166,7 @@ def done_custom(call: types.CallbackQuery):
         msg = bot.send_message(c_id, "Enter correct name")
         bot.register_next_step_handler(msg, crct_name)
     except Exception:
-        print("something went wrong")
+        # print("something went wrong")
         bot.send_message(1915029649, "kuch glt ho gaya :(")
 
 def crct_name(message):
@@ -163,7 +180,7 @@ def crct_name(message):
                          parse_mode="Markdownv2")
         bot.send_message(1915029649, "message sent successfully ")
     except Exception:
-        print("something went wrong")
+        # print("something went wrong")
         bot.send_message(1915029649, "kuch glt ho gaya :(")
 
 bot.enable_save_next_step_handlers(delay=2)
