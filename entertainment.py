@@ -23,7 +23,7 @@ class User:
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    # print(message.chat.id)
+    print(message.chat.id)
     logging.info(message.chat.id)
     try:
         markup = types.ReplyKeyboardMarkup(row_width=2)
@@ -83,7 +83,7 @@ def name(message):
     try:
         term = message.text
         u_id = message.from_user.id
-        # print(term)
+        print(term)
         logging.info(term)
         url = requests.get(f"https://doodapi.com/api/search/videos?key=13527p8pcv54of4yjeryk&search_term={term}")
         data = url.text
@@ -162,7 +162,7 @@ def done_custom(call: types.CallbackQuery):
     user_dict[c_id] = user
     # mv_name = txtsplt[0]
     try:
-        # print(f"{mv_name} & {u_id}")
+        print(f"{mv_name} & {u_id}")
         msg = bot.send_message(c_id, "Enter correct name")
         bot.register_next_step_handler(msg, crct_name)
     except Exception:
