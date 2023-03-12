@@ -11,7 +11,7 @@ from telebot import types
 
 logging.basicConfig(filename='example.log', level=logging.DEBUG)
 
-API_TOKEN = '5620400281:AAHw03yvbtfCpitTWl_r3RXlSACHgeL2IPg'
+API_TOKEN = '5505287179:AAFu9iQ7jTeY8JM_KTN7hPe6oUawkYI195A'
 
 bot = telebot.TeleBot(API_TOKEN)
 
