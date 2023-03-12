@@ -4,12 +4,9 @@ import json
 import math
 from telebot import types
 import multiprocessing
-import logging
 
 from telebot import custom_filters
 from telebot import types
-
-logging.basicConfig(filename='example.log', level=logging.DEBUG)
 
 API_TOKEN = '5505287179:AAFu9iQ7jTeY8JM_KTN7hPe6oUawkYI195A'
 
@@ -24,7 +21,6 @@ class User:
 @bot.message_handler(commands=["start"])
 def start(message):
     print(message.chat.id)
-    logging.info(message.chat.id)
     try:
         markup = types.ReplyKeyboardMarkup(row_width=2)
         bot.reply_to(message, 'okey! now enter any name of movie or webseries you want to watch today',
@@ -84,7 +80,6 @@ def name(message):
         term = message.text
         u_id = message.from_user.id
         print(term)
-        logging.info(term)
         url = requests.get(f"https://doodapi.com/api/search/videos?key=13527p8pcv54of4yjeryk&search_term={term}")
         data = url.text
         parse_json = json.loads(data)
@@ -110,8 +105,8 @@ def name(message):
         else:
             # we will add the list of all file codes here/
             try:
-                if  __name__ == "__main__":
-                    with multiprocessing.Pool(processes=-1) as pool:
+                if __name__ == "__main__":
+                    with multiprocessing.Pool(processes=4) as pool:
                         main_data = pool.map(fetch_final_data, f_codes)
                         for img, name, file_size, markup in main_data:
                             bot.send_photo(message.chat.id, img, f"<b>TITLE:</b> <i>{name}</i>\n"
@@ -137,8 +132,7 @@ def done_default(call: types.CallbackQuery):
     raw_text = call.message.text
     txtsplt = raw_text.split(',')
     u_id = txtsplt[1]
-    # print(u_id)
-    logging.info(u_id)
+    print(u_id)
     mv_name = txtsplt[0]
     try:
         # print(f"{mv_name} & {u_id}")
@@ -147,7 +141,7 @@ def done_default(call: types.CallbackQuery):
                          parse_mode="Markdownv2")
         bot.send_message(1915029649, "message sent successfully ")
     except Exception:
-        # print("something went wrong")
+        print("something went wrong")
         bot.send_message(1915029649, "kuch glt ho gaya :(")
 
 @bot.callback_query_handler(func=lambda c: c.data == 'done_custom')
@@ -156,17 +150,16 @@ def done_custom(call: types.CallbackQuery):
     raw_text = call.message.text
     txtsplt = raw_text.split(',')
     u_id = txtsplt[1]
-    # print(u_id)
-    logging.info(u_id)
+    print(u_id)
     user = User(u_id)
     user_dict[c_id] = user
     # mv_name = txtsplt[0]
     try:
-        print(f"{mv_name} & {u_id}")
+        # print(f"{mv_name} & {u_id}")
         msg = bot.send_message(c_id, "Enter correct name")
         bot.register_next_step_handler(msg, crct_name)
     except Exception:
-        # print("something went wrong")
+        print("something went wrong")
         bot.send_message(1915029649, "kuch glt ho gaya :(")
 
 def crct_name(message):
@@ -180,7 +173,7 @@ def crct_name(message):
                          parse_mode="Markdownv2")
         bot.send_message(1915029649, "message sent successfully ")
     except Exception:
-        # print("something went wrong")
+        print("something went wrong")
         bot.send_message(1915029649, "kuch glt ho gaya :(")
 
 bot.enable_save_next_step_handlers(delay=2)
