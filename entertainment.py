@@ -4,7 +4,7 @@ import json
 import math
 from telebot import types
 import multiprocessing
-
+from datetime import datetime, timedelta
 from telebot import custom_filters
 from telebot import types
 
@@ -113,6 +113,15 @@ def name(message):
         print(term)
         url = requests.get(f"https://doodapi.com/api/search/videos?key=13527p8pcv54of4yjeryk&search_term={term}")
         data = url.text
+        
+        #set cache
+        now = datetime.now()
+            expires_at = now + timedelta(hours=1)  # Cache for 1 hour
+            session.headers.update({
+                'Cache-Control': 'public, max-age=3600',
+                'Expires': expires_at.strftime('%a, %d %b %Y %H:%M:%S GMT')
+            })
+        
         parse_json = json.loads(data)
         # make a list of all the filecodes
         res = parse_json["result"]
