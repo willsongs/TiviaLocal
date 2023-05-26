@@ -121,6 +121,7 @@ def name(message):
             'Cache-Control': 'public, max-age=3600',
             'Expires': expires_at.strftime('%a, %d %b %Y %H:%M:%S GMT')
         })
+        session.cache.set(url.url, data)
         
         parse_json = json.loads(data)
         # make a list of all the filecodes
