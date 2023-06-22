@@ -82,6 +82,7 @@ def ok(message):
     except Exception as e:
         bot.reply_to(message, 'oooops')
 
+@functools.lru_cache(maxsize=1000)
 def fetch_final_data(code):
     s_url = requests.get(f"https://doodapi.com/api/file/info?key=13527p8pcv54of4yjeryk&file_code={code}")
     sdata = s_url.text
